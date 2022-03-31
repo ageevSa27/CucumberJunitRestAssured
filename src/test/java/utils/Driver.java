@@ -10,20 +10,19 @@ public class Driver {
     public static Variables variables = Variables.getVariables();
 
     public static String validateVariables(String var) {
-        for (Map.Entry<String, String> x : variables.getMap().entrySet()) {
-            if (var.contains("${")) {
-                List<String> list = new ArrayList<>();
 
-                String b = "(?<=\\$\\{)([\\s\\S]+?)(?=})";
-                Pattern p = Pattern.compile(b);
-                Matcher m = p.matcher(var);
-                if (m.find()) {
-                    list.add(m.group());
-                    int a;
-                }
+        if (var.contains("${")) {
+            List<String> list = new ArrayList<>();
+            Pattern p = Pattern.compile("(?<=\\$\\{)([\\s\\S]+?)(?=\\})");
+            Matcher m = p.matcher(var);
+            while (m.find()) {
+                list.add(m.group());
+            }
+            for (String a : list) {
+                var = var.replaceAll("\\$\\{" + a + "}", variables.getMap().get(a));
             }
 
-            return variables.getMap().get(var);
+            return var;
         }
         return var;
     }
